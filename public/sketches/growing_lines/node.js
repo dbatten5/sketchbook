@@ -21,6 +21,10 @@ class Node {
     return this.d;
   }
 
+  radius() {
+    return this.r;
+  }
+
   setDirection(direction) {
     this.d = direction;
   }
