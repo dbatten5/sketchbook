@@ -21,7 +21,7 @@ const manager = {
         const data = await load(template);
         return [path.basename(template), data]
       })
-    )
+    );
 
     mkdir(sketchPath)
       .then(files => (
@@ -42,7 +42,7 @@ const manager = {
     const slug = generateSlug(name);
     removeSketch(slug)
       .then(console.log('Done'));
-  }
+  },
 };
 
 module.exports = manager;
