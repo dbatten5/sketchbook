@@ -14,7 +14,7 @@ const generateSlug = (name) => (
 const manager = {
   createSketch: async (name) => {
     const slug = generateSlug(name);
-    const sketchPath = `public/sketches/${slug}`;
+    const sketchPath = `src/sketches/${slug}`;
 
     const loadedTemplates = await Promise.all(
       templates.map(async (template) => {
