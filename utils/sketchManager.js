@@ -14,14 +14,14 @@ const generateSlug = (name) => (
 const manager = {
   createSketch: async (name) => {
     const slug = generateSlug(name);
-    const sketchPath = `public/sketches/${slug}`;
+    const sketchPath = `src/sketches/${slug}`;
 
     const loadedTemplates = await Promise.all(
       templates.map(async (template) => {
         const data = await load(template);
         return [path.basename(template), data]
       })
-    )
+    );
 
     mkdir(sketchPath)
       .then(files => (
@@ -42,7 +42,7 @@ const manager = {
     const slug = generateSlug(name);
     removeSketch(slug)
       .then(console.log('Done'));
-  }
+  },
 };
 
 module.exports = manager;

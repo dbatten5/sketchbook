@@ -1,3 +1,5 @@
+import p5 from 'p5/lib/p5.min.js';
+
 const sketch = (s) => {
   s.setup = () => {
     s.background('fff');
