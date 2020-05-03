@@ -5,7 +5,7 @@ module.exports = {
     node: true,
   },
   extends: [
-    'airbnb-base',
+    'standard',
   ],
   globals: {
     Atomics: 'readonly',
@@ -16,5 +16,7 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
-  },
-};
+    "comma-dangle": ['error', 'always-multiline'],
+    semi: ['error', 'always'],
+  }
+}
