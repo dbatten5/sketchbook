@@ -1,114 +1,72 @@
 /* eslint-disable no-param-reassign */
 import p5 from 'p5/lib/p5.min';
-import KDBush from 'kdbush';
 import Attractor from './attractor';
 import Node from './node';
+import Structure from './structure';
 
 const sketch = (s) => {
   const origin = s.createVector(s.windowWidth / 2, s.windowHeight / 2);
 
   const attractors = [];
-  let nodes = [];
+  const nodes = [];
+  let structure;
+
+  // s.randomSeed(13);
+
+  s.randomSeed(20);
 
   s.setup = () => {
     s.background('fff');
     s.createCanvas(s.windowWidth, s.windowHeight);
     s.translate(origin.x, origin.y);
 
-    for (let i = 0; i < 30; i++) {
-      for (let j = 0; j < 30; j++) {
-        const x = s.map(i, 0, 30, -350, 350);
-        const y = s.map(j, 0, 30, -350, 350);
-        const p = s.createVector(x + s.random(-5, 5), y + s.random(-5, 5));
+    const density = 30;
+    const skew = 5;
+    const limits = 350;
+
+    for (let i = 0; i < density; i++) {
+      for (let j = 0; j < density; j++) {
+        const x = s.map(i, 0, density, -limits, limits);
+        const y = s.map(j, 0, density, -limits, limits);
+        const p = s.createVector(
+          x + s.random(-skew, skew),
+          y + s.random(-skew, skew),
+        );
         const attractor = new Attractor(s, p);
         attractors.push(attractor);
       }
     }
 
-    const na1 = s.createVector(-150, 80);
-    const node1 = new Node(s, na1)
+    const na1 = s.createVector(
+      -s.random(-limits, limits),
+      s.random(-limits, limits),
+    );
+    const node1 = new Node(s, na1, null);
     nodes.push(node1);
 
-    // s.frameRate(5);
+    const na2 = s.createVector(-s.random(-limits, limits), s.random(-limits, limits));
+    const node2 = new Node(s, na2, null);
+    nodes.push(node2);
+
+    const na3 = s.createVector(-s.random(-limits, limits), s.random(-limits, limits));
+    const node3 = new Node(s, na3, null);
+    nodes.push(node3);
+
+    structure = new Structure(s, attractors, nodes, {});
+
+    s.frameRate(20);
   };
 
   s.draw = () => {
-    const tree = new KDBush(nodes, p => p.position.x, p => p.position.y);
     s.background('fff');
+
     s.translate(origin.x, origin.y);
 
-    // for (const attractor of attractors) {
-    //   // draw the attractor
-    //   attractor.draw(s);
-    // }
+    s.stroke('#c41616');
 
-    for (const attractor of attractors) {
-      // draw the attractor
-      // attractor.draw(s);
+    structure.iterate();
 
-      // ignore dead attractors
-      if (attractor.dead) {
-        continue;
-      }
-
-      // find all nodes which are influenced by this attractor
-      const closestNodes = tree.within(attractor.position.x, attractor.position.y, 150);
-
-      // if nothing within the influence zone
-      if (closestNodes.length === 0) {
-        continue;
-      }
-
-      // find the closest one
-      const closestNodeIndex = closestNodes.reduce((acc, curr, i) => {
-        return nodes[curr].position.dist(attractor.position) < nodes[acc].position.dist(attractor.position) ?
-          curr : acc;
-      }, 0);
-      const closestNode = nodes[closestNodeIndex];
-
-      // if the closest is within the kill zone
-      if (closestNode.position.dist(attractor.position) < 10) {
-        // kill the attractor
-        attractor.dead = true;
-        continue;
-      }
-
-      // add the attractor to the influencedBy array for that node
-      closestNode.influencedBy.push(attractor);
-    }
-
-    const newNodes = [];
-    for (const node of nodes) {
-      // only interested in nodes under the influence
-      if (node.influencedBy.length === 0) {
-        continue;
-      }
-
-      // find normalized average direction for all its influencing attractors
-      const direction = node.getAverageAttractionDirection();
-
-      // scale by predefined amount
-      direction.mult(7);
-
-      // find the new position
-      const newPosition = node.position.copy().add(direction)
-
-      // create node and new position
-      const newNode = new Node(s, newPosition);
-
-      // add to collection of new nodes
-      newNodes.push(newNode);
-    }
-
-    nodes = nodes.concat(newNodes);
-
-    // draw all the nodes
-    for (const node of nodes) {
-      node.draw();
-      node.influencedBy = [];
-    }
-
-    if (s.frameCount === 35) {
+    if (s.frameCount === 150) {
       s.noLoop();
     }
   };
