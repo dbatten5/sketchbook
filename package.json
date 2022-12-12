@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "commander": "^5.0.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-handlebars": "^4.0.3",
     "inquirer": "^7.1.0",
     "kdbush": "^3.0.0",
